@@ -51,7 +51,7 @@
 //!
 //! [Bevy]: https://bevyengine.org
 //! [Ratatui]: https://ratatui.rs
-//! [examples]: https://github.com/joshka/bevy_ratatui/tree/main/examples
+//! [examples]: https://github.com/cxreiff/bevy_ratatui/tree/main/examples
 
 pub mod error;
 pub mod event;

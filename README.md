@@ -69,6 +69,7 @@ eframe. Demo at <https://gold-silver-copper.github.io/>
 ## License
 
 Copyright (c) Josh McKinney
+Copyright (c) Cooper Jax Reiff
 
 This project is licensed under either of
 
