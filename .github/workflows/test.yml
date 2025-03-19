@@ -1,4 +1,4 @@
-name: Test
+name: test
 
 on:
   push:
@@ -7,7 +7,9 @@ on:
   pull_request:
 
 jobs:
-  test:
-    uses: joshka/github-workflows/.github/workflows/rust-test.yml@main
+  tests:
+    uses: cxreiff/github_workflows/.github/workflows/rust_tests.yml@main
     secrets:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      DEDICATED_TOKEN: ${{ secrets.DEDICATED_TOKEN }}
+    with:
+      linux_dependencies: "libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev"
