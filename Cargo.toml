@@ -2,7 +2,7 @@
 name = "bevy_ratatui"
 description = "A Bevy plugin for building terminal user interfaces with Ratatui"
 version = "0.7.1"
-edition = "2021"
+edition = "2024"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/cxreiff/bevy_ratatui"
 documentation = "https://docs.rs/bevy_ratatui"

@@ -7,7 +7,7 @@ use std::{
 };
 
 use bevy::{
-    input::{keyboard::KeyboardInput, ButtonState},
+    input::{ButtonState, keyboard::KeyboardInput},
     prelude::*,
 };
 use crossterm::event::KeyModifiers;
@@ -228,14 +228,14 @@ impl ReleaseKey {
         use ReleaseKey::*;
         match self {
             FrameCount(_) | Immediate => {
-                if let ReleaseKeyState::Count(ref mut c) = state {
+                if let ReleaseKeyState::Count(c) = state {
                     *c = c.saturating_add(1);
                 } else {
                     *state = ReleaseKeyState::Count(0);
                 }
             }
             Duration(d) => {
-                if let ReleaseKeyState::Timer(ref mut timer) = state {
+                if let ReleaseKeyState::Timer(timer) = state {
                     timer.tick(delta);
                 } else {
                     *state = ReleaseKeyState::Timer(Timer::new(*d, TimerMode::Once));
@@ -250,13 +250,13 @@ impl ReleaseKey {
         match self {
             OnNextKey => false,
             FrameCount(target) => {
-                let ReleaseKeyState::Count(ref count) = state else {
+                let ReleaseKeyState::Count(count) = state else {
                     return false;
                 };
                 count >= target
             }
             Duration(_) => {
-                let ReleaseKeyState::Timer(ref timer) = state else {
+                let ReleaseKeyState::Timer(timer) = state else {
                     return false;
                 };
                 timer.finished()
@@ -270,7 +270,7 @@ impl ReleaseKey {
         match self {
             FrameCount(_) | Immediate => *state = ReleaseKeyState::Count(0),
             Duration(d) => {
-                if let ReleaseKeyState::Timer(ref mut timer) = state {
+                if let ReleaseKeyState::Timer(timer) = state {
                     timer.reset();
                 } else {
                     *state = ReleaseKeyState::Timer(Timer::new(*d, TimerMode::Once));
