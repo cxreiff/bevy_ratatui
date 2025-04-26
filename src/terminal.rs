@@ -5,13 +5,12 @@
 //!
 //! [`RatatuiContext`] is a wrapper [`Resource`] around ratatui::Terminal that automatically enters
 //! and leaves the alternate screen.
-use std::io::{self, stdout, Stdout};
+use std::io::{self, Stdout, stdout};
 
 use bevy::{app::AppExit, prelude::*};
 use crossterm::{
-    cursor,
-    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
-    ExecutableCommand,
+    ExecutableCommand, cursor,
+    terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
 };
 use ratatui::backend::CrosstermBackend;
 

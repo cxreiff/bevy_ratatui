@@ -3,9 +3,9 @@ use bevy::{
     prelude::*,
 };
 use bevy_ratatui::{
+    RatatuiPlugins,
     event::{KeyEvent, MouseEvent},
     terminal::RatatuiContext,
-    RatatuiPlugins,
 };
 use crossterm::event::MouseEventKind;
 use rand::prelude::*;

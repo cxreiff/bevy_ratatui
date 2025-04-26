@@ -4,7 +4,7 @@ use bevy::{
     app::{AppExit, ScheduleRunnerPlugin},
     prelude::*,
 };
-use bevy_ratatui::{event::KeyEvent, terminal::RatatuiContext, RatatuiPlugins};
+use bevy_ratatui::{RatatuiPlugins, event::KeyEvent, terminal::RatatuiContext};
 use crossterm::event::KeyCode;
 use ratatui::text::Text;
 

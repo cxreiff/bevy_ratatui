@@ -3,8 +3,8 @@ use std::io::stdout;
 
 use bevy::prelude::*;
 use crossterm::{
-    event::{DisableMouseCapture, EnableMouseCapture},
     ExecutableCommand,
+    event::{DisableMouseCapture, EnableMouseCapture},
 };
 
 pub struct MousePlugin;

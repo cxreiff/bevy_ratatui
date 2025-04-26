@@ -3,7 +3,7 @@ use bevy::{
     prelude::*,
 };
 use bevy_ratatui::{
-    event::KeyEvent, kitty::KittyEnabled, terminal::RatatuiContext, RatatuiPlugins,
+    RatatuiPlugins, event::KeyEvent, kitty::KittyEnabled, terminal::RatatuiContext,
 };
 use crossterm::event::KeyEventKind;
 use ratatui::text::Text;

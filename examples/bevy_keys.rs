@@ -2,15 +2,15 @@ use std::ops::DerefMut;
 
 use bevy::{
     app::{AppExit, ScheduleRunnerPlugin},
-    input::{keyboard::KeyboardInput, ButtonState},
+    input::{ButtonState, keyboard::KeyboardInput},
     prelude::*,
 };
 use bevy_ratatui::{
+    RatatuiPlugins,
     event::KeyEvent,
     input_forwarding::{Capability, Detected, Emulate, EmulationPolicy, ReleaseKey},
     kitty::KittyEnabled,
     terminal::RatatuiContext,
-    RatatuiPlugins,
 };
 use crossterm::event::KeyEventKind;
 use ratatui::text::Text;
