@@ -92,6 +92,7 @@ See the [demo example](examples/demo.rs) for the code and more information.
 
 | bevy  | bevy_ratatui |
 |-------|--------------|
+| 0.16  | 0.8          |
 | 0.15  | 0.7          |
 | 0.14  | 0.6          |
 | 0.13  | 0.5          |

@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [0.8.0](https://github.com/cxreiff/bevy_ratatui/compare/v0.7.1...v0.8.0) - 2025-04-26
+
+### Added
+
+- Add passthrough `serde` feature
+
+### Other
+
+- make ctrl+c handling optional
+- cargo fmt
+- cargo fix --edition
+- migration to bevy 0.16
+
 ## [0.7.1](https://github.com/cxreiff/bevy_ratatui/compare/v0.7.0...v0.7.1) - 2025-03-21
 
 ### Other
