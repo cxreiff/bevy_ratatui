@@ -7,20 +7,18 @@ use crossterm::{
     ExecutableCommand,
 };
 
-use crate::error::exit_on_error;
-
 pub struct MousePlugin;
 
 impl Plugin for MousePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup.pipe(exit_on_error));
+        app.add_systems(Startup, setup);
     }
 }
 
 #[derive(Resource, Default)]
 pub struct MouseCaptureEnabled;
 
-fn setup(mut commands: Commands) -> color_eyre::Result<()> {
+fn setup(mut commands: Commands) -> Result {
     stdout().execute(EnableMouseCapture)?;
     commands.insert_resource(MouseCaptureEnabled);
     Ok(())

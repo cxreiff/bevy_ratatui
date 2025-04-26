@@ -8,7 +8,6 @@
 use std::io::{self, stdout, Stdout};
 
 use bevy::{app::AppExit, prelude::*};
-use color_eyre::Result;
 use crossterm::{
     cursor,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
@@ -16,7 +15,7 @@ use crossterm::{
 };
 use ratatui::backend::CrosstermBackend;
 
-use crate::{error::exit_on_error, kitty::KittyEnabled, mouse::MouseCaptureEnabled};
+use crate::{kitty::KittyEnabled, mouse::MouseCaptureEnabled};
 
 /// A plugin that sets up the terminal.
 ///
@@ -26,13 +25,13 @@ pub struct TerminalPlugin;
 
 impl Plugin for TerminalPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup.pipe(exit_on_error))
+        app.add_systems(Startup, setup)
             .add_systems(PostUpdate, cleanup_system);
     }
 }
 
 /// A startup system that sets up the terminal.
-pub fn setup(mut commands: Commands) -> Result<()> {
+pub fn setup(mut commands: Commands) -> Result {
     let terminal = RatatuiContext::init()?;
     commands.insert_resource(terminal);
     Ok(())

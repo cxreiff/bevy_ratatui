@@ -3,17 +3,13 @@
 //! This module provides a plugin that sets up error handling for the app. It installs hooks for
 //! panic and error handling that restore the terminal before printing the panic or error message.
 //! This ensures that the error message is not messed up by the terminal state.
-//!
-//! The `exit_on_error` function is used to exit the app if an error occurs. It is used to pipe
-//! results from functions that return `Result` to the `exit_on_error` system. If the result is an
-//! error, the error is logged and the app is exited.
 use std::panic;
 
 use bevy::{app::AppExit, prelude::*};
 use color_eyre::{
     self,
     config::{EyreHook, HookBuilder, PanicHook},
-    eyre, Result,
+    eyre,
 };
 
 use crate::terminal::RatatuiContext;
@@ -31,7 +27,7 @@ pub struct ErrorPlugin;
 /// is restored before printing the panic or error message.
 impl Plugin for ErrorPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup.pipe(exit_on_error));
+        app.add_systems(Startup, setup);
     }
 }
 
@@ -40,10 +36,11 @@ impl Plugin for ErrorPlugin {
 /// Makes the app resilient to panics and errors by restoring the terminal before printing the
 /// panic or error message. This prevents error messages from being messed up by the terminal
 /// state.
-pub fn setup() -> Result<()> {
+pub fn setup() -> Result {
     let (panic_hook, eyre_hook) = HookBuilder::default().into_hooks();
     set_panic_hook(panic_hook);
     set_error_hook(eyre_hook)?;
+
     Ok(())
 }
 
@@ -57,12 +54,13 @@ fn set_panic_hook(panic_hook: PanicHook) {
 }
 
 /// Install an error hook that restores the terminal before printing the error.
-fn set_error_hook(eyre_hook: EyreHook) -> Result<()> {
+fn set_error_hook(eyre_hook: EyreHook) -> Result {
     let eyre_hook = eyre_hook.into_eyre_hook();
     eyre::set_hook(Box::new(move |error| {
         let _ = RatatuiContext::restore();
         eyre_hook(error)
     }))?;
+
     Ok(())
 }
 
@@ -70,9 +68,13 @@ fn set_error_hook(eyre_hook: EyreHook) -> Result<()> {
 ///
 /// This is used to pipe results from functions that return `Result` to the `exit_on_error` system.
 /// If the result is an error, the error is logged and the app is exited.
+#[deprecated(
+    since = "0.8.0",
+    note = "bevy now allows returning the catch-all `bevy::prelude::Result` from systems, so piping is no longer necessary"
+)]
 pub fn exit_on_error(In(result): In<Result<()>>, mut app_exit: EventWriter<AppExit>) {
     if let Err(err) = result {
-        error!("Error: {:?}", err);
-        app_exit.send_default();
+        tracing::error!("Error: {:?}", err);
+        app_exit.write_default();
     }
 }

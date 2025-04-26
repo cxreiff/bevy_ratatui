@@ -318,7 +318,7 @@ fn reset_emulation_check(mut commands: Commands) {
 #[allow(clippy::too_many_arguments)]
 fn send_key_events_with_emulation(
     mut keys: EventReader<KeyEvent>,
-    window: Query<Entity, With<DummyWindow>>,
+    bevy_window: Single<Entity, With<DummyWindow>>,
     mut modifiers: Local<Modifiers>,
     mut last_pressed: Local<LastPress>,
     mut keyboard_input: EventWriter<KeyboardInput>,
@@ -333,9 +333,8 @@ fn send_key_events_with_emulation(
         return;
     }
 
-    let bevy_window = window.single();
     for key_event in keys.read() {
-        if let Some((bevy_event, mods, repeated)) = key_event_to_bevy(key_event, bevy_window) {
+        if let Some((bevy_event, mods, repeated)) = key_event_to_bevy(key_event, *bevy_window) {
             let emulation = policy.emulate_capabilities(&detected);
             if emulation.contains(Capability::MODIFIER) && mods != **modifiers {
                 let delta = mods.symmetric_difference(**modifiers);
@@ -348,8 +347,8 @@ fn send_key_events_with_emulation(
                         ButtonState::Released
                     };
                     let modifier_event =
-                        modifier_to_bevy(crossterm_modifier_to_bevy_key(flag), state, bevy_window);
-                    keyboard_input.send(modifier_event);
+                        modifier_to_bevy(crossterm_modifier_to_bevy_key(flag), state, *bevy_window);
+                    keyboard_input.write(modifier_event);
                 }
                 **modifiers = mods;
             }
@@ -368,10 +367,10 @@ fn send_key_events_with_emulation(
                     last_pressed.1.insert(last_press);
                 } else {
                     last_pressed.1.insert(wrapped);
-                    keyboard_input.send(bevy_event);
+                    keyboard_input.write(bevy_event);
                 }
             } else {
-                keyboard_input.send(bevy_event);
+                keyboard_input.write(bevy_event);
             }
         }
     }
@@ -386,7 +385,7 @@ fn send_key_events_with_emulation(
             repeat: e.0.state == ButtonState::Released,
             ..e.0
         };
-        keyboard_input.send(reciprocal_event);
+        keyboard_input.write(reciprocal_event);
     }
 
     if release_key.finished(&release_key_state)
@@ -398,8 +397,8 @@ fn send_key_events_with_emulation(
         for flag in **modifiers {
             let state = ButtonState::Released;
             let modifier_event =
-                modifier_to_bevy(crossterm_modifier_to_bevy_key(flag), state, bevy_window);
-            keyboard_input.send(modifier_event);
+                modifier_to_bevy(crossterm_modifier_to_bevy_key(flag), state, *bevy_window);
+            keyboard_input.write(modifier_event);
         }
         **modifiers = KeyModifiers::empty();
     }
@@ -411,16 +410,16 @@ fn send_key_events_with_emulation(
 /// when emulation is not involved.
 fn send_key_events_no_emulation(
     mut keys: EventReader<KeyEvent>,
-    window: Query<Entity, With<DummyWindow>>,
+    bevy_window: Single<Entity, With<DummyWindow>>,
     mut keyboard_input: EventWriter<KeyboardInput>,
     mut key_repeat_queue: Local<Vec<KeyboardInput>>,
 ) {
     for bevy_event in key_repeat_queue.drain(..) {
-        keyboard_input.send(bevy_event);
+        keyboard_input.write(bevy_event);
     }
-    let bevy_window = window.single();
+
     for key_event in keys.read() {
-        if let Some((bevy_event, _modifiers, repeated)) = key_event_to_bevy(key_event, bevy_window)
+        if let Some((bevy_event, _modifiers, repeated)) = key_event_to_bevy(key_event, *bevy_window)
         {
             if repeated {
                 key_repeat_queue.push(KeyboardInput {
@@ -428,7 +427,7 @@ fn send_key_events_no_emulation(
                     ..bevy_event.clone()
                 });
             }
-            keyboard_input.send(bevy_event);
+            keyboard_input.write(bevy_event);
         }
     }
 }
@@ -464,6 +463,9 @@ fn modifier_to_bevy(
         window,
         logical_key,
 
+        // No text produced for modifier keys.
+        text: None,
+
         // Assuming that modifier keys do not repeat.
         repeat: false,
     }
@@ -494,6 +496,8 @@ fn key_event_to_bevy(
     };
     let key_code = to_bevy_keycode(code);
     let logical_key = to_bevy_key(code);
+    let text = logical_key.as_ref().and_then(logical_key_to_text);
+
     key_code
         .zip(logical_key)
         .map(|((key_code, mods), logical_key)| {
@@ -503,6 +507,7 @@ fn key_event_to_bevy(
                     state,
                     window,
                     logical_key,
+                    text,
 
                     // Repeat events are sent next frame based on 'repeated' tuple element.
                     repeat: false,
@@ -898,7 +903,7 @@ fn to_bevy_key(key_code: &crossterm::event::KeyCode) -> Option<bevy::input::keyb
         c::Char(c) => Some({
             let mut tmp = [0u8; 4];
             let s = c.encode_utf8(&mut tmp);
-            b::Character(smol_str::SmolStr::from(s))
+            b::Character(s.into())
         }),
         c::Null => None,
         c::Esc => Some(b::Escape),
@@ -967,4 +972,12 @@ fn crossterm_modifier_to_bevy_key(
     };
     assert!(i.next().is_none());
     result
+}
+
+fn logical_key_to_text(logical_key: &bevy::input::keyboard::Key) -> Option<String> {
+    if let bevy::input::keyboard::Key::Character(character) = logical_key {
+        Some(character.clone())
+    } else {
+        None
+    }
 }

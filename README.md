@@ -26,11 +26,11 @@ fn main() {
             MinimalPlugins.set(ScheduleRunnerPlugin::run_loop(frame_time)),
             RatatuiPlugins::default(),
         ))
-        .add_systems(Update, draw_system.map(bevy::utils::error))
+        .add_systems(Update, draw_system)
         .run();
 }
 
-fn draw_system(mut context: ResMut<RatatuiContext>) -> std::io::Result<()> {
+fn draw_system(mut context: ResMut<RatatuiContext>) -> Result {
     context.draw(|frame| {
         let text = ratatui::text::Text::raw("hello world");
         frame.render_widget(text, frame.area());

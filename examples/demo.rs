@@ -14,13 +14,11 @@ use std::time::Duration;
 
 use bevy::{
     app::{AppExit, ScheduleRunnerPlugin},
-    core::FrameCount,
+    diagnostic::FrameCount,
     prelude::*,
     state::app::StatesPlugin,
 };
-use bevy_ratatui::{
-    error::exit_on_error, event::KeyEvent, terminal::RatatuiContext, RatatuiPlugins,
-};
+use bevy_ratatui::{event::KeyEvent, terminal::RatatuiContext, RatatuiPlugins};
 use crossterm::event::KeyCode;
 use ratatui::{
     buffer::Buffer,
@@ -46,11 +44,7 @@ fn main() {
         .add_systems(PreUpdate, keyboard_input_system)
         .add_systems(
             Update,
-            (
-                ui_system.pipe(exit_on_error),
-                update_counter_system,
-                background_color_system,
-            ),
+            (ui_system, update_counter_system, background_color_system),
         )
         .add_systems(OnEnter(AppState::Negative), start_background_color_timer)
         .add_systems(OnEnter(AppState::Positive), start_background_color_timer)
@@ -63,7 +57,7 @@ fn ui_system(
     counter: Res<Counter>,
     app_state: Res<State<AppState>>,
     bg_color: Res<BackgroundColor>,
-) -> color_eyre::Result<()> {
+) -> Result {
     context.draw(|frame| {
         let area = frame.area();
         let frame_count = Line::from(format!("Frame Count: {}", frame_count.0)).right_aligned();
@@ -72,6 +66,7 @@ fn ui_system(
         frame.render_widget(counter.as_ref(), area);
         frame.render_widget(app_state.get(), area)
     })?;
+
     Ok(())
 }
 
@@ -83,16 +78,16 @@ fn keyboard_input_system(
     for event in events.read() {
         match event.code {
             KeyCode::Char('q') | KeyCode::Esc => {
-                app_exit.send_default();
+                app_exit.write_default();
             }
             KeyCode::Char('p') => {
                 panic!("Panic!");
             }
             KeyCode::Left => {
-                counter_events.send(CounterEvent::Decrement);
+                counter_events.write(CounterEvent::Decrement);
             }
             KeyCode::Right => {
-                counter_events.send(CounterEvent::Increment);
+                counter_events.write(CounterEvent::Increment);
             }
             _ => {}
         }
@@ -194,14 +189,12 @@ impl WidgetRef for BackgroundColor {
 /// or vice versa.
 fn background_color_system(
     time: Res<Time>,
-    mut query: Query<(Entity, &mut ColorChangeTimer)>,
+    query: Single<(Entity, &mut ColorChangeTimer)>,
     app_state: Res<State<AppState>>,
     mut commands: Commands,
     mut bg_color: ResMut<BackgroundColor>,
 ) {
-    let Ok((entity, mut timer)) = query.get_single_mut() else {
-        return;
-    };
+    let (entity, mut timer) = query.into_inner();
     timer.tick(time.delta());
     let end_color = match app_state.get() {
         AppState::Negative => Color::Rgb(191, 0, 0),

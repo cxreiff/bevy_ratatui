@@ -11,17 +11,16 @@ categories = ["command-line-interface"]
 keywords = ["cli", "ratatui", "terminal", "tui", "bevy"]
 
 [dependencies]
-bevy = { version = "0.15", default-features = false }
+bevy = { version = "0.16", default-features = false }
 bitflags = "2.8.0"
 color-eyre = "0.6.3"
-crossterm = "0.28.1"
+crossterm = "0.29.0"
 ratatui = { version = "0.29.0", features = ["unstable-widget-ref"] }
-# bevy_input has not been updated to smol_str 0.3 yet
-smol_str = "~0.2.2"
+tracing = "0.1.41"
 
 [dev-dependencies]
 rand = "0.9.0"
-bevy = { version = "0.15", default-features = false, features = ["bevy_state"] }
+bevy = { version = "0.16", default-features = false, features = ["bevy_state"] }
 
 # Enable a small amount of optimization in debug mode
 [profile.dev]
@@ -32,5 +31,15 @@ opt-level = 1
 opt-level = 3
 
 [features]
+default = ["std", "async_executor"]
+
+# Features for `std` platforms
+std = ["bevy/std"]
+async_executor = ["bevy/async_executor"]
+
+# Features for `no_std` platforms
+libm = ["bevy/libm"]
+critical-section = ["bevy/critical-section"]
+
 # Allow enabling serde support for downstream crates
 serde = ["crossterm/serde"]

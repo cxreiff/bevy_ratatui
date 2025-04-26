@@ -1,10 +1,11 @@
+use std::ops::DerefMut;
+
 use bevy::{
     app::{AppExit, ScheduleRunnerPlugin},
     input::{keyboard::KeyboardInput, ButtonState},
     prelude::*,
 };
 use bevy_ratatui::{
-    error::exit_on_error,
     event::KeyEvent,
     input_forwarding::{Capability, Detected, Emulate, EmulationPolicy, ReleaseKey},
     kitty::KittyEnabled,
@@ -30,7 +31,7 @@ fn main() {
                 bevy_keypresses,
             ),
         )
-        .add_systems(Update, draw_scene_system.pipe(exit_on_error))
+        .add_systems(Update, draw_scene_system)
         .add_systems(Update, hotkeys)
         .run();
 }
@@ -44,6 +45,7 @@ struct LastBevyKeypress(pub KeyboardInput);
 #[derive(Resource, Deref, DerefMut)]
 struct BevyKeypresses(pub Vec<KeyCode>);
 
+#[allow(clippy::too_many_arguments)]
 fn draw_scene_system(
     mut context: ResMut<RatatuiContext>,
     kitty_enabled: Option<Res<KittyEnabled>>,
@@ -54,7 +56,7 @@ fn draw_scene_system(
     detected: Res<Detected>,
     release_key: Res<ReleaseKey>,
     policy: Res<EmulationPolicy>,
-) -> color_eyre::Result<()> {
+) -> Result {
     context.draw(|frame| {
         let mut text = Text::raw(if kitty_enabled.is_some() {
             "Kitty protocol enabled!"
@@ -117,6 +119,7 @@ fn draw_scene_system(
 
         frame.render_widget(text.centered(), frame.area())
     })?;
+
     Ok(())
 }
 
@@ -128,7 +131,7 @@ fn hotkeys(
 ) {
     use bevy::input::keyboard::KeyCode::*;
     if input.just_pressed(KeyQ) | input.just_pressed(Escape) {
-        exit.send_default();
+        exit.write_default();
     } else if input.just_pressed(KeyR) {
         use ReleaseKey::*;
         *release_key = match *release_key {
@@ -140,7 +143,7 @@ fn hotkeys(
     } else if input.just_pressed(KeyP) {
         // Mutate the policy to ensure that the Emulate marker is removed
         // (however briefly).
-        *policy = *policy;
+        policy.deref_mut();
     }
 }
 

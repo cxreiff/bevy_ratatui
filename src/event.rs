@@ -24,11 +24,8 @@
 use std::time::Duration;
 
 use bevy::{app::AppExit, prelude::*};
-use color_eyre::Result;
 use crossterm::event::{self, Event::Key, KeyCode, KeyEventKind, KeyModifiers};
 use ratatui::layout::Size;
-
-use crate::error::exit_on_error;
 
 /// InputSet defines when the input events are emitted.
 #[derive(SystemSet, Debug, Hash, PartialEq, Eq, Clone)]
@@ -72,9 +69,7 @@ impl Plugin for EventPlugin {
             )
             .add_systems(
                 PreUpdate,
-                crossterm_event_system
-                    .pipe(exit_on_error)
-                    .in_set(InputSet::EmitCrossterm),
+                crossterm_event_system.in_set(InputSet::EmitCrossterm),
             );
     }
 }
@@ -118,7 +113,7 @@ pub fn crossterm_event_system(
     mut paste: EventWriter<PasteEvent>,
     mut resize: EventWriter<ResizeEvent>,
     mut exit: EventWriter<AppExit>,
-) -> Result<()> {
+) -> Result {
     while event::poll(Duration::ZERO)? {
         let event = event::read()?;
         match event {
@@ -127,28 +122,28 @@ pub fn crossterm_event_system(
                     && event.modifiers == KeyModifiers::CONTROL
                     && event.code == KeyCode::Char('c')
                 {
-                    exit.send_default();
+                    exit.write_default();
                 }
 
-                keys.send(KeyEvent(event));
+                keys.write(KeyEvent(event));
             }
             event::Event::FocusLost => {
-                focus.send(FocusEvent::Lost);
+                focus.write(FocusEvent::Lost);
             }
             event::Event::FocusGained => {
-                focus.send(FocusEvent::Gained);
+                focus.write(FocusEvent::Gained);
             }
             event::Event::Mouse(event) => {
-                mouse.send(MouseEvent(event));
+                mouse.write(MouseEvent(event));
             }
             event::Event::Paste(ref s) => {
-                paste.send(PasteEvent(s.clone()));
+                paste.write(PasteEvent(s.clone()));
             }
             event::Event::Resize(columns, rows) => {
-                resize.send(ResizeEvent(Size::new(columns, rows)));
+                resize.write(ResizeEvent(Size::new(columns, rows)));
             }
         }
-        events.send(CrosstermEvent(event));
+        events.write(CrosstermEvent(event));
     }
     Ok(())
 }

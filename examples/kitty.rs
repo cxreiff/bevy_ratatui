@@ -3,8 +3,7 @@ use bevy::{
     prelude::*,
 };
 use bevy_ratatui::{
-    error::exit_on_error, event::KeyEvent, kitty::KittyEnabled, terminal::RatatuiContext,
-    RatatuiPlugins,
+    event::KeyEvent, kitty::KittyEnabled, terminal::RatatuiContext, RatatuiPlugins,
 };
 use crossterm::event::KeyEventKind;
 use ratatui::text::Text;
@@ -15,7 +14,7 @@ fn main() {
         .add_plugins(RatatuiPlugins::default())
         .add_plugins(ScheduleRunnerPlugin::run_loop(wait_duration))
         .add_systems(PreUpdate, keyboard_input_system)
-        .add_systems(Update, draw_scene_system.pipe(exit_on_error))
+        .add_systems(Update, draw_scene_system)
         .run();
 }
 
@@ -26,7 +25,7 @@ fn draw_scene_system(
     mut context: ResMut<RatatuiContext>,
     kitty_enabled: Option<Res<KittyEnabled>>,
     last_keypress: Option<Res<LastKeypress>>,
-) -> color_eyre::Result<()> {
+) -> Result {
     context.draw(|frame| {
         let mut text = Text::raw(if kitty_enabled.is_some() {
             "Kitty protocol enabled!"
@@ -61,7 +60,7 @@ fn keyboard_input_system(
     for event in events.read() {
         match event.code {
             KeyCode::Char('q') | KeyCode::Esc => {
-                exit.send_default();
+                exit.write_default();
             }
             _ => {
                 commands.insert_resource(LastKeypress(event.clone()));
