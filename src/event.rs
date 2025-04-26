@@ -46,7 +46,18 @@ pub enum InputSet {
 ///
 /// This plugin adds the `KeyEvent` event, and a system that reads events from crossterm and sends
 /// them to the `KeyEvent` event.
-pub struct EventPlugin;
+pub struct EventPlugin {
+    /// Adds an input handler that signals bevy to exit when an interrupt keypress (control+c) is read.
+    control_c_interrupt: bool,
+}
+
+impl Default for EventPlugin {
+    fn default() -> Self {
+        Self {
+            control_c_interrupt: true,
+        }
+    }
+}
 
 impl Plugin for EventPlugin {
     fn build(&self, app: &mut App) {
@@ -71,6 +82,10 @@ impl Plugin for EventPlugin {
                 PreUpdate,
                 crossterm_event_system.in_set(InputSet::EmitCrossterm),
             );
+
+        if self.control_c_interrupt {
+            app.add_systems(Update, control_c_interrupt_system.in_set(InputSet::Post));
+        }
     }
 }
 
@@ -146,4 +161,18 @@ pub fn crossterm_event_system(
         events.write(CrosstermEvent(event));
     }
     Ok(())
+}
+
+fn control_c_interrupt_system(
+    mut key_events: EventReader<KeyEvent>,
+    mut exit: EventWriter<AppExit>,
+) {
+    for event in key_events.read() {
+        if event.kind == KeyEventKind::Press
+            && event.modifiers == KeyModifiers::CONTROL
+            && event.code == KeyCode::Char('c')
+        {
+            exit.write_default();
+        }
+    }
 }

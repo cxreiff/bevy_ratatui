@@ -46,7 +46,7 @@ impl PluginGroup for RatatuiPlugins {
         let mut builder = PluginGroupBuilder::start::<Self>()
             .add(error::ErrorPlugin)
             .add(terminal::TerminalPlugin)
-            .add(event::EventPlugin);
+            .add(event::EventPlugin::default());
         if self.enable_kitty_protocol {
             builder = builder.add(kitty::KittyPlugin);
         }
