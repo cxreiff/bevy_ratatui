@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [0.8.3](https://github.com/cxreiff/bevy_ratatui/compare/v0.8.2...v0.8.3) - 2025-04-27
+
+### Other
+
+- make control_c_interrupt public
+
 ## [0.8.2](https://github.com/cxreiff/bevy_ratatui/compare/v0.8.1...v0.8.2) - 2025-04-27
 
 ### Other
