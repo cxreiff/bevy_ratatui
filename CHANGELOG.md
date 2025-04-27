@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [0.8.1](https://github.com/cxreiff/bevy_ratatui/compare/v0.8.0...v0.8.1) - 2025-04-27
+
+### Fixed
+
+- fixed issue when bevy/bevy_winit feature enabled
+
 ## [0.8.0](https://github.com/cxreiff/bevy_ratatui/compare/v0.7.1...v0.8.0) - 2025-04-26
 
 ### Added
