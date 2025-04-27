@@ -11,6 +11,7 @@ use bevy::{
     prelude::*,
 };
 use crossterm::event::KeyModifiers;
+use smol_str::SmolStr;
 
 use crate::event::{InputSet, KeyEvent};
 
@@ -496,7 +497,14 @@ fn key_event_to_bevy(
     };
     let key_code = to_bevy_keycode(code);
     let logical_key = to_bevy_key(code);
-    let text = logical_key.as_ref().and_then(logical_key_to_text);
+
+    // Using `into()` here because a String or a SmolStr are required depending on the enabled bevy
+    // features.
+    #[warn(clippy::useless_conversion)]
+    let text = logical_key
+        .as_ref()
+        .and_then(logical_key_to_text)
+        .map(|s| s.into());
 
     key_code
         .zip(logical_key)
@@ -974,9 +982,9 @@ fn crossterm_modifier_to_bevy_key(
     result
 }
 
-fn logical_key_to_text(logical_key: &bevy::input::keyboard::Key) -> Option<String> {
+fn logical_key_to_text(logical_key: &bevy::input::keyboard::Key) -> Option<SmolStr> {
     if let bevy::input::keyboard::Key::Character(character) = logical_key {
-        Some(character.clone())
+        Some(SmolStr::new(character.clone()))
     } else {
         None
     }
