@@ -55,6 +55,8 @@
 //! [Ratatui]: https://ratatui.rs
 //! [examples]: https://github.com/cxreiff/bevy_ratatui/tree/main/examples
 
+#[cfg(not(feature = "windowed"))]
+pub mod crossterm;
 pub mod error;
 pub mod event;
 pub mod input_forwarding;
@@ -62,5 +64,7 @@ pub mod kitty;
 pub mod mouse;
 mod ratatui;
 pub mod terminal;
+#[cfg(feature = "windowed")]
+pub mod windowed;
 
 pub use ratatui::RatatuiPlugins;

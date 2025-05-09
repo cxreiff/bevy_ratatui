@@ -1,5 +1,7 @@
 use bevy::{app::PluginGroupBuilder, prelude::*};
 
+#[cfg(feature = "windowed")]
+use crate::windowed;
 use crate::{error, event, input_forwarding, kitty, mouse, terminal};
 
 /// A plugin group that includes all the plugins in the Ratatui crate.
@@ -47,12 +49,19 @@ impl PluginGroup for RatatuiPlugins {
             .add(error::ErrorPlugin)
             .add(terminal::TerminalPlugin)
             .add(event::EventPlugin::default());
+
+        #[cfg(feature = "windowed")]
+        {
+            builder = builder.add(windowed::SoftRender);
+        }
+
         if self.enable_kitty_protocol {
             builder = builder.add(kitty::KittyPlugin);
         }
         if self.enable_mouse_capture {
             builder = builder.add(mouse::MousePlugin);
         }
+
         if self.enable_input_forwarding {
             builder = builder.add(input_forwarding::KeyboardPlugin);
         }

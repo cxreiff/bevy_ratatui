@@ -18,8 +18,8 @@ use bevy::{
     prelude::*,
     state::app::StatesPlugin,
 };
-use bevy_ratatui::{RatatuiPlugins, event::KeyEvent, terminal::RatatuiContext};
-use crossterm::event::KeyCode;
+use bevy_ratatui::{RatatuiPlugins, terminal::RatatuiContext};
+
 use ratatui::{
     buffer::Buffer,
     layout::Rect,
@@ -33,9 +33,16 @@ fn main() {
 
     App::new()
         .add_plugins((
+            #[cfg(not(feature = "windowed"))]
             MinimalPlugins.set(ScheduleRunnerPlugin::run_loop(frame_time)),
-            RatatuiPlugins::default(),
+            #[cfg(not(feature = "windowed"))]
             StatesPlugin,
+            #[cfg(feature = "windowed")]
+            DefaultPlugins,
+            RatatuiPlugins {
+                enable_input_forwarding: true,
+                ..default()
+            },
         ))
         .init_resource::<BackgroundColor>()
         .init_resource::<Counter>()
@@ -71,26 +78,21 @@ fn ui_system(
 }
 
 fn keyboard_input_system(
-    mut events: EventReader<KeyEvent>,
+    keys: Res<ButtonInput<KeyCode>>,
     mut app_exit: EventWriter<AppExit>,
     mut counter_events: EventWriter<CounterEvent>,
 ) {
-    for event in events.read() {
-        match event.code {
-            KeyCode::Char('q') | KeyCode::Esc => {
-                app_exit.write_default();
-            }
-            KeyCode::Char('p') => {
-                panic!("Panic!");
-            }
-            KeyCode::Left => {
-                counter_events.write(CounterEvent::Decrement);
-            }
-            KeyCode::Right => {
-                counter_events.write(CounterEvent::Increment);
-            }
-            _ => {}
-        }
+    if keys.pressed(KeyCode::KeyQ) {
+        app_exit.write_default();
+    }
+    if keys.pressed(KeyCode::KeyP) {
+        panic!("Panic!");
+    }
+    if keys.pressed(KeyCode::ArrowLeft) {
+        counter_events.write(CounterEvent::Decrement);
+    }
+    if keys.pressed(KeyCode::ArrowRight) {
+        counter_events.write(CounterEvent::Increment);
     }
 }
 

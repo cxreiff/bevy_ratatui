@@ -12,7 +12,7 @@ use color_eyre::{
     eyre,
 };
 
-use crate::terminal::RatatuiContext;
+use crate::terminal::{RatatuiContext, TerminalContext};
 
 /// A plugin that sets up error handling.
 ///

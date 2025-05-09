@@ -2,6 +2,7 @@
 use std::io::stdout;
 
 use bevy::prelude::*;
+
 use crossterm::{
     ExecutableCommand,
     event::{DisableMouseCapture, EnableMouseCapture},

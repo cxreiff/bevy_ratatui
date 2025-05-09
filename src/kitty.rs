@@ -2,6 +2,7 @@
 use std::io::{self, stdout};
 
 use bevy::prelude::*;
+
 use crossterm::{
     ExecutableCommand,
     event::{KeyboardEnhancementFlags, PopKeyboardEnhancementFlags, PushKeyboardEnhancementFlags},

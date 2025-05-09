@@ -4,8 +4,8 @@ use bevy::{
     app::{AppExit, ScheduleRunnerPlugin},
     prelude::*,
 };
-use bevy_ratatui::{RatatuiPlugins, event::KeyEvent, terminal::RatatuiContext};
-use crossterm::event::KeyCode;
+use bevy_ratatui::{RatatuiPlugins, terminal::RatatuiContext};
+
 use ratatui::text::Text;
 
 fn main() {
@@ -13,8 +13,14 @@ fn main() {
 
     App::new()
         .add_plugins((
+            #[cfg(not(feature = "windowed"))]
             MinimalPlugins.set(ScheduleRunnerPlugin::run_loop(frame_time)),
-            RatatuiPlugins::default(),
+            #[cfg(feature = "windowed")]
+            DefaultPlugins,
+            RatatuiPlugins {
+                enable_input_forwarding: true,
+                ..default()
+            },
         ))
         .add_systems(PreUpdate, input_system)
         .add_systems(Update, draw_system)
@@ -30,10 +36,8 @@ fn draw_system(mut context: ResMut<RatatuiContext>) -> Result {
     Ok(())
 }
 
-fn input_system(mut events: EventReader<KeyEvent>, mut exit: EventWriter<AppExit>) {
-    for event in events.read() {
-        if let KeyCode::Char('q') = event.code {
-            exit.write_default();
-        }
+fn input_system(keys: Res<ButtonInput<KeyCode>>, mut exit: EventWriter<AppExit>) {
+    if keys.just_pressed(KeyCode::KeyQ) {
+        exit.write_default();
     }
 }
