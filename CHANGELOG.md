@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [0.9.0](https://github.com/cxreiff/bevy_ratatui/compare/v0.8.3...v0.9.0) - 2025-05-13
+
+### Fixed
+
+- fixed workflows
+
+### Other
+
+- miscellaneous docs updates
+- public facing module structure
+- miscellaneous fixes for examples
+- refactored for encapsulation of context type
+- miscellaneous improvements and addressed comments
+- rename window feature from 'soft' to 'windowed'
+- integrate soft_ratatui for a windowed output mode
+
+### Removed
+
+- removed some cfg feature gates
+
 ## [0.8.3](https://github.com/cxreiff/bevy_ratatui/compare/v0.8.2...v0.8.3) - 2025-04-27
 
 ### Other
