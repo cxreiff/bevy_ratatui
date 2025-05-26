@@ -23,7 +23,12 @@ impl Debug for WindowedContext {
 
 impl TerminalContext<SoftBackend> for WindowedContext {
     fn init() -> Result<Self> {
-        let backend = SoftBackend::new_with_system_fonts(15, 15, 16);
+        let backend = SoftBackend::new_with_font(
+            15,
+            15,
+            16,
+            include_bytes!("../../assets/FiraMono-Medium.ttf"),
+        );
         let terminal = Terminal::new(backend)?;
         Ok(Self(terminal))
     }
