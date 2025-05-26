@@ -28,7 +28,7 @@ pub fn terminal_render_setup(
     softatui: ResMut<RatatuiContext>,
     mut images: ResMut<Assets<Image>>,
 ) -> Result {
-    commands.spawn(bevy::core_pipeline::core_2d::Camera2d);
+    commands.spawn(Camera2d);
     // Create an image that we are going to draw into
     let width = softatui.backend().get_pixmap_width() as u32;
     let height = softatui.backend().get_pixmap_height() as u32;

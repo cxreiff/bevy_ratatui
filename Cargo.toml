@@ -14,8 +14,8 @@ keywords = ["cli", "ratatui", "terminal", "tui", "bevy"]
 bevy = { version = "0.16", default-features = false }
 bitflags = "2.8.0"
 color-eyre = "0.6.3"
-crossterm = "0.29.0"
-ratatui = { version = "0.29.0", features = ["unstable-widget-ref"] }
+crossterm = { version = "0.29.0", optional = true }
+ratatui = { version = "0.29.0", default-features = false }
 smol_str = "0.2.2"
 soft_ratatui = { version = "0.0.8", optional = true }
 tracing = "0.1.41"
@@ -23,6 +23,7 @@ tracing = "0.1.41"
 [dev-dependencies]
 rand = "0.9.0"
 bevy = { version = "0.16", default-features = false, features = ["bevy_state"] }
+ratatui = { version = "0.29.0", features = ["unstable-widget-ref"] }
 
 # Enable a small amount of optimization in debug mode
 [profile.dev]
@@ -33,7 +34,8 @@ opt-level = 1
 opt-level = 3
 
 [features]
-default = ["std", "async_executor"]
+default = ["std", "async_executor", "crossterm"]
+crossterm = ["dep:crossterm", "ratatui/crossterm"]
 windowed = ["dep:soft_ratatui", "bevy/default"]
 
 # Features for `std` platforms

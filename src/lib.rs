@@ -56,6 +56,7 @@
 //! [examples]: https://github.com/cxreiff/bevy_ratatui/tree/main/examples
 
 mod context_trait;
+#[cfg(feature = "crossterm")]
 mod crossterm_context;
 mod ratatui_context;
 mod ratatui_plugin;
@@ -67,6 +68,7 @@ pub use ratatui_plugin::RatatuiPlugins;
 
 pub mod context {
     pub use super::context_trait::TerminalContext;
+    #[cfg(feature = "crossterm")]
     pub use super::crossterm_context::context::CrosstermContext;
     pub use super::ratatui_context::DefaultContext;
     pub use super::ratatui_plugin::ContextPlugin;
@@ -74,14 +76,17 @@ pub mod context {
     pub use super::windowed_context::context::WindowedContext;
 }
 
+#[cfg(feature = "crossterm")]
 pub mod cleanup {
     pub use super::crossterm_context::cleanup::CleanupPlugin;
 }
 
+#[cfg(feature = "crossterm")]
 pub mod error {
     pub use super::crossterm_context::error::ErrorPlugin;
 }
 
+#[cfg(feature = "crossterm")]
 pub mod event {
     pub use super::crossterm_context::event::{
         CrosstermEvent, EventPlugin, FocusEvent, InputSet, KeyEvent, MouseEvent, PasteEvent,
@@ -89,14 +94,17 @@ pub mod event {
     };
 }
 
+#[cfg(feature = "crossterm")]
 pub mod kitty {
     pub use super::crossterm_context::kitty::{KittyEnabled, KittyPlugin};
 }
 
+#[cfg(feature = "crossterm")]
 pub mod mouse {
     pub use super::crossterm_context::mouse::{MouseEnabled, MousePlugin};
 }
 
+#[cfg(feature = "crossterm")]
 pub mod translation {
     pub use super::crossterm_context::translation::*;
 }

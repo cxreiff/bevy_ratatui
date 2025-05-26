@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use super::context_trait::TerminalContext;
 
-#[cfg(not(feature = "windowed"))]
+#[cfg(all(feature = "crossterm", not(feature = "windowed")))]
 pub type DefaultContext = crate::context::CrosstermContext;
 
 #[cfg(feature = "windowed")]
