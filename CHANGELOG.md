@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [0.9.1](https://github.com/cxreiff/bevy_ratatui/compare/v0.9.0...v0.9.1) - 2025-05-26
+
+### Other
+
+- new feature for toggling crossterm context
+
 ## [0.9.0](https://github.com/cxreiff/bevy_ratatui/compare/v0.8.3...v0.9.0) - 2025-05-13
 
 ### Fixed
