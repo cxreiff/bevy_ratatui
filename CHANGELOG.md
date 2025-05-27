@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [0.9.2](https://github.com/cxreiff/bevy_ratatui/compare/v0.9.1...v0.9.2) - 2025-05-27
+
+### Other
+
+- remove direct dependency on crossterm
+
 ## [0.9.1](https://github.com/cxreiff/bevy_ratatui/compare/v0.9.0...v0.9.1) - 2025-05-26
 
 ### Other
