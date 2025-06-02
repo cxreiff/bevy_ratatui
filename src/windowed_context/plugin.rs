@@ -14,8 +14,10 @@ pub struct WindowedPlugin;
 impl Plugin for WindowedPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(PostStartup, terminal_render_setup)
-            .add_systems(PreUpdate, handle_resize_events)
-            .add_systems(Update, render_terminal_to_handle);
+            .add_systems(
+                Last,
+                (handle_resize_events, render_terminal_to_handle).chain(),
+            );
     }
 }
 
