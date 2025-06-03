@@ -16,7 +16,7 @@ bitflags = "2.8.0"
 color-eyre = "0.6.3"
 ratatui = { version = "0.29.0", default-features = false }
 smol_str = "0.2.2"
-soft_ratatui = { version = "0.0.8", optional = true }
+soft_ratatui = { git = "https://github.com/cxreiff/soft_ratatui", branch = "main", optional = true }
 tracing = "0.1.41"
 
 [dev-dependencies]
