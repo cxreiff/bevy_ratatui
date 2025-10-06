@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [0.9.3](https://github.com/cxreiff/bevy_ratatui/compare/v0.9.2...v0.9.3) - 2025-10-06
+
+### Other
+
+- Bump tracing-subscriber from 0.3.19 to 0.3.20 ([#66](https://github.com/cxreiff/bevy_ratatui/pull/66))
+- bump soft_ratatui ([#68](https://github.com/cxreiff/bevy_ratatui/pull/68))
+
 ## [0.9.2](https://github.com/cxreiff/bevy_ratatui/compare/v0.9.1...v0.9.2) - 2025-05-27
 
 ### Other
