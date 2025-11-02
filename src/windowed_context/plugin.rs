@@ -86,7 +86,7 @@ fn render_terminal_to_handle(
 
 /// System that reacts to window resize
 fn handle_resize_events(
-    mut resize_reader: EventReader<WindowResized>,
+    mut resize_reader: MessageReader<WindowResized>,
     mut softatui: ResMut<RatatuiContext>,
 ) {
     for event in resize_reader.read() {

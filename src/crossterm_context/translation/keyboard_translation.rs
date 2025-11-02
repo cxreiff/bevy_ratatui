@@ -258,7 +258,7 @@ impl ReleaseKey {
                 let ReleaseKeyState::Timer(timer) = state else {
                     return false;
                 };
-                timer.finished()
+                timer.is_finished()
             }
             Immediate => true,
         }
@@ -281,7 +281,7 @@ impl ReleaseKey {
 }
 
 #[allow(clippy::too_many_arguments)]
-fn detect_capabilities(mut keys: EventReader<KeyEvent>, mut detected: ResMut<Detected>) {
+fn detect_capabilities(mut keys: MessageReader<KeyEvent>, mut detected: ResMut<Detected>) {
     for key_event in keys.read() {
         if matches!(
             key_event.code,
@@ -322,11 +322,11 @@ fn reset_emulation_check(mut commands: Commands) {
 
 #[allow(clippy::too_many_arguments)]
 fn send_key_events_with_emulation(
-    mut keys: EventReader<KeyEvent>,
+    mut keys: MessageReader<KeyEvent>,
     bevy_window: Single<Entity, With<DummyWindow>>,
     mut modifiers: Local<Modifiers>,
     mut last_pressed: Local<LastPress>,
-    mut keyboard_input: EventWriter<KeyboardInput>,
+    mut keyboard_input: MessageWriter<KeyboardInput>,
     release_key: Res<ReleaseKey>,
     mut release_key_state: Local<ReleaseKeyState>,
     time: Res<Time>,
@@ -414,9 +414,9 @@ fn send_key_events_with_emulation(
 /// Send bevy events without any emulation. This merely shows how simple life is
 /// when emulation is not involved.
 fn send_key_events_no_emulation(
-    mut keys: EventReader<KeyEvent>,
+    mut keys: MessageReader<KeyEvent>,
     bevy_window: Single<Entity, With<DummyWindow>>,
-    mut keyboard_input: EventWriter<KeyboardInput>,
+    mut keyboard_input: MessageWriter<KeyboardInput>,
     mut key_repeat_queue: Local<Vec<KeyboardInput>>,
 ) {
     for bevy_event in key_repeat_queue.drain(..) {

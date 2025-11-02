@@ -50,8 +50,8 @@ fn draw_scene_system(
 }
 
 fn keyboard_input_system(
-    mut events: EventReader<KeyEvent>,
-    mut exit: EventWriter<AppExit>,
+    mut events: MessageReader<KeyEvent>,
+    mut exit: MessageWriter<AppExit>,
     mut commands: Commands,
 ) {
     use ratatui::crossterm::event::KeyCode;

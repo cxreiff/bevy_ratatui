@@ -124,7 +124,7 @@ fn draw_scene_system(
 
 fn hotkeys(
     input: Res<ButtonInput<KeyCode>>,
-    mut exit: EventWriter<AppExit>,
+    mut exit: MessageWriter<AppExit>,
     mut release_key: ResMut<ReleaseKey>,
     mut policy: ResMut<EmulationPolicy>,
 ) {
@@ -146,13 +146,13 @@ fn hotkeys(
     }
 }
 
-fn keyboard_input_system(mut events: EventReader<KeyEvent>, mut commands: Commands) {
+fn keyboard_input_system(mut events: MessageReader<KeyEvent>, mut commands: Commands) {
     for event in events.read() {
         commands.insert_resource(LastKeypress(event.clone()));
     }
 }
 
-fn bevy_keyboard_input_system(mut events: EventReader<KeyboardInput>, mut commands: Commands) {
+fn bevy_keyboard_input_system(mut events: MessageReader<KeyboardInput>, mut commands: Commands) {
     for event in events.read() {
         commands.insert_resource(LastBevyKeypress(event.clone()));
     }

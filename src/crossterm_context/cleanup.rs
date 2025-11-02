@@ -12,12 +12,17 @@ pub struct CleanupPlugin;
 
 impl Plugin for CleanupPlugin {
     fn build(&self, app: &mut App) {
-        app.add_observer(cleanup);
+        app.add_systems(Last, cleanup);
     }
 }
 
-fn cleanup(_trigger: Trigger<AppExit>, mut commands: Commands) {
-    commands.remove_resource::<KittyEnabled>();
-    commands.remove_resource::<MouseEnabled>();
-    commands.remove_resource::<RatatuiContext>();
+fn cleanup(
+    mut app_exit: MessageReader<AppExit>,
+    mut commands: Commands,
+) {
+    if app_exit.read().next().is_some() {
+        commands.remove_resource::<KittyEnabled>();
+        commands.remove_resource::<MouseEnabled>();
+        commands.remove_resource::<RatatuiContext>();
+    }
 }

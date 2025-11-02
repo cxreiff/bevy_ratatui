@@ -55,7 +55,7 @@ fn main() {
     app.init_resource::<BackgroundColor>()
         .init_resource::<Counter>()
         .init_state::<AppState>()
-        .add_event::<CounterEvent>()
+        .add_message::<CounterEvent>()
         .add_systems(
             Update,
             (ui_system, update_counter_system, background_color_system),
@@ -86,9 +86,9 @@ fn ui_system(
 
 #[cfg(not(feature = "windowed"))]
 fn keyboard_input_system(
-    mut events: EventReader<KeyEvent>,
-    mut app_exit: EventWriter<AppExit>,
-    mut counter_events: EventWriter<CounterEvent>,
+    mut events: MessageReader<KeyEvent>,
+    mut app_exit: MessageWriter<AppExit>,
+    mut counter_events: MessageWriter<CounterEvent>,
 ) {
     use ratatui::crossterm::event::KeyCode;
     for event in events.read() {
@@ -117,8 +117,8 @@ fn keyboard_input_system(
 #[cfg(feature = "windowed")]
 fn keyboard_input_system_windowed(
     keys: Res<ButtonInput<KeyCode>>,
-    mut app_exit: EventWriter<AppExit>,
-    mut counter_events: EventWriter<CounterEvent>,
+    mut app_exit: MessageWriter<AppExit>,
+    mut counter_events: MessageWriter<CounterEvent>,
 ) {
     if keys.just_pressed(KeyCode::KeyQ) {
         app_exit.write_default();
@@ -147,7 +147,7 @@ impl Counter {
     }
 }
 
-#[derive(Debug, Clone, Copy, Event, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Message, PartialEq, Eq)]
 enum CounterEvent {
     Increment,
     Decrement,
@@ -155,7 +155,7 @@ enum CounterEvent {
 
 fn update_counter_system(
     mut counter: ResMut<Counter>,
-    mut events: EventReader<CounterEvent>,
+    mut events: MessageReader<CounterEvent>,
     mut app_state: ResMut<NextState<AppState>>,
 ) {
     for event in events.read() {

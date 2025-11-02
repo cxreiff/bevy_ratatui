@@ -21,7 +21,7 @@ fn main() {
         .run();
 }
 
-fn keyboard_input_system(mut events: EventReader<KeyEvent>, mut exit: EventWriter<AppExit>) {
+fn keyboard_input_system(mut events: MessageReader<KeyEvent>, mut exit: MessageWriter<AppExit>) {
     use ratatui::crossterm::event::KeyCode;
     for event in events.read() {
         match event.code {
@@ -121,7 +121,7 @@ fn draw_balls(mut context: ResMut<RatatuiContext>, query: Query<(&Ball, &Positio
 }
 
 fn mouse_input_system(
-    mut events: EventReader<MouseEvent>,
+    mut events: MessageReader<MouseEvent>,
     mut commands: Commands,
     context: Res<RatatuiContext>,
 ) {

@@ -35,10 +35,10 @@
 //!     Ok(())
 //! }
 //!
-//! fn input_system(mut events: EventReader<KeyEvent>, mut exit: EventWriter<AppExit>) {
+//! fn input_system(mut events: MessageReader<KeyEvent>, mut exit: MessageWriter<AppExit>) {
 //!     for event in events.read() {
 //!         if let KeyCode::Char('q') = event.code {
-//!             exit.send_default();
+//!             exit.write_default();
 //!         }
 //!     }
 //! }
