@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
-## [0.9.4](https://github.com/cxreiff/bevy_ratatui/compare/v0.9.3...v0.9.4) - 2025-11-12
+## [0.10.0](https://github.com/cxreiff/bevy_ratatui/compare/v0.9.3...v0.10.0) - 2025-11-12
 
 ### Other
 
