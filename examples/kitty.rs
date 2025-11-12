@@ -2,7 +2,7 @@ use bevy::{
     app::{AppExit, ScheduleRunnerPlugin},
     prelude::*,
 };
-use bevy_ratatui::{RatatuiContext, RatatuiPlugins, event::KeyEvent, kitty::KittyEnabled};
+use bevy_ratatui::{RatatuiContext, RatatuiPlugins, event::KeyMessage, kitty::KittyEnabled};
 use ratatui::crossterm::event::KeyEventKind;
 use ratatui::text::Text;
 
@@ -17,7 +17,7 @@ fn main() {
 }
 
 #[derive(Resource, Deref, DerefMut)]
-struct LastKeypress(pub KeyEvent);
+struct LastKeypress(pub KeyMessage);
 
 fn draw_scene_system(
     mut context: ResMut<RatatuiContext>,
@@ -50,18 +50,18 @@ fn draw_scene_system(
 }
 
 fn keyboard_input_system(
-    mut events: EventReader<KeyEvent>,
-    mut exit: EventWriter<AppExit>,
+    mut messages: MessageReader<KeyMessage>,
+    mut exit: MessageWriter<AppExit>,
     mut commands: Commands,
 ) {
     use ratatui::crossterm::event::KeyCode;
-    for event in events.read() {
-        match event.code {
+    for message in messages.read() {
+        match message.code {
             KeyCode::Char('q') | KeyCode::Esc => {
                 exit.write_default();
             }
             _ => {
-                commands.insert_resource(LastKeypress(event.clone()));
+                commands.insert_resource(LastKeypress(message.clone()));
             }
         }
     }

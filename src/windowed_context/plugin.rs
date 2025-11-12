@@ -14,7 +14,7 @@ pub struct WindowedPlugin;
 impl Plugin for WindowedPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(PostStartup, terminal_render_setup)
-            .add_systems(PreUpdate, handle_resize_events)
+            .add_systems(PreUpdate, handle_resize_messages)
             .add_systems(Update, render_terminal_to_handle);
     }
 }
@@ -85,15 +85,15 @@ fn render_terminal_to_handle(
 }
 
 /// System that reacts to window resize
-fn handle_resize_events(
-    mut resize_reader: EventReader<WindowResized>,
+fn handle_resize_messages(
+    mut resize_reader: MessageReader<WindowResized>,
     mut softatui: ResMut<RatatuiContext>,
 ) {
-    for event in resize_reader.read() {
+    for message in resize_reader.read() {
         let cur_pix_width = softatui.backend().char_width;
         let cur_pix_height = softatui.backend().char_height;
-        let av_wid = (event.width / cur_pix_width as f32) as u16;
-        let av_hei = (event.height / cur_pix_height as f32) as u16;
+        let av_wid = (message.width / cur_pix_width as f32) as u16;
+        let av_hei = (message.height / cur_pix_height as f32) as u16;
         softatui.backend_mut().resize(av_wid, av_hei);
     }
 }

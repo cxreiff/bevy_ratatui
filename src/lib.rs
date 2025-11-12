@@ -9,7 +9,7 @@
 //!     app::{AppExit, ScheduleRunnerPlugin},
 //!     prelude::*,
 //! };
-//! use bevy_ratatui::{event::KeyEvent, RatatuiContext, RatatuiPlugins};
+//! use bevy_ratatui::{event::KeyMessage, RatatuiContext, RatatuiPlugins};
 //! use ratatui::crossterm::event::KeyCode;
 //! use ratatui::text::Text;
 //!
@@ -35,10 +35,10 @@
 //!     Ok(())
 //! }
 //!
-//! fn input_system(mut events: EventReader<KeyEvent>, mut exit: EventWriter<AppExit>) {
-//!     for event in events.read() {
-//!         if let KeyCode::Char('q') = event.code {
-//!             exit.send_default();
+//! fn input_system(mut messages: MessageReader<KeyMessage>, mut exit: MessageWriter<AppExit>) {
+//!     for message in messages.read() {
+//!         if let KeyCode::Char('q') = message.code {
+//!             exit.write_default();
 //!         }
 //!     }
 //! }
@@ -92,8 +92,8 @@ pub mod error {
 #[cfg(feature = "crossterm")]
 pub mod event {
     pub use super::crossterm_context::event::{
-        CrosstermEvent, EventPlugin, FocusEvent, InputSet, KeyEvent, MouseEvent, PasteEvent,
-        ResizeEvent,
+        CrosstermMessage, EventPlugin, FocusMessage, InputSet, KeyMessage, MouseMessage,
+        PasteMessage, ResizeMessage,
     };
 }
 

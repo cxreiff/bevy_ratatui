@@ -7,14 +7,14 @@
 //!
 //! ```rust
 //! use bevy::{app::AppExit, prelude::*};
-//! use bevy_ratatui::event::KeyEvent;
+//! use bevy_ratatui::event::KeyMessage;
 //! use ratatui::crossterm::event::KeyCode;
 //!
-//! fn keyboard_input_system(mut events: EventReader<KeyEvent>, mut exit: EventWriter<AppExit>) {
-//!     for event in events.read() {
-//!         match event.code {
+//! fn keyboard_input_system(mut messages: MessageReader<KeyMessage>, mut exit: MessageWriter<AppExit>) {
+//!     for message in messages.read() {
+//!         match message.code {
 //!             KeyCode::Char('q') | KeyCode::Esc => {
-//!                 exit.send_default();
+//!                 exit.write_default();
 //!             }
 //!             _ => {}
 //!         }
@@ -29,8 +29,8 @@ use ratatui::layout::Size;
 
 /// A plugin for handling events.
 ///
-/// This plugin reads events from the terminal environment and forwards them to Bevy using the
-/// `KeyEvent` event.
+/// This plugin reads events from the terminal environment and forwards them as Bevy messages using the
+/// `KeyMessage` message.
 pub struct EventPlugin {
     /// Adds an input handler that signals bevy to exit when an interrupt keypress (control+c) is read.
     pub control_c_interrupt: bool,
@@ -46,12 +46,12 @@ impl Default for EventPlugin {
 
 impl Plugin for EventPlugin {
     fn build(&self, app: &mut bevy::prelude::App) {
-        app.add_event::<KeyEvent>()
-            .add_event::<MouseEvent>()
-            .add_event::<FocusEvent>()
-            .add_event::<ResizeEvent>()
-            .add_event::<PasteEvent>()
-            .add_event::<CrosstermEvent>()
+        app.add_message::<KeyMessage>()
+            .add_message::<MouseMessage>()
+            .add_message::<FocusMessage>()
+            .add_message::<ResizeMessage>()
+            .add_message::<PasteMessage>()
+            .add_message::<CrosstermMessage>()
             .configure_sets(
                 Update,
                 (
@@ -74,95 +74,93 @@ impl Plugin for EventPlugin {
     }
 }
 
-/// InputSet defines when the input events are emitted.
+/// InputSet defines when the input messages are emitted.
 #[derive(SystemSet, Debug, Hash, PartialEq, Eq, Clone)]
 pub enum InputSet {
-    /// Run before any input events are emitted.
+    /// Run before any input messages are emitted.
     Pre,
-    /// Emit the crossterm events.
+    /// Emit the crossterm messages.
     EmitCrossterm,
     /// Check for emulation
     CheckEmulation,
-    /// Emit the bevy events if [crate::input_forwarding::KeyboardPlugin] has been added.
+    /// Emit the bevy messages if [crate::input_forwarding::KeyboardPlugin] has been added.
     EmitBevy,
-    /// Run after all input events are emitted.
+    /// Run after all input messages are emitted.
     Post,
 }
 
-/// An event that is sent whenever an event is read from crossterm.
-#[derive(Debug, Deref, Event, PartialEq, Eq, Clone, Hash)]
-pub struct CrosstermEvent(pub event::Event);
+/// A message that is sent whenever an event is read from crossterm.
+#[derive(Message, Deref, Clone, PartialEq, Eq, Hash, Debug)]
+pub struct CrosstermMessage(pub event::Event);
 
-/// An event that is sent whenever a key event is read from crossterm.
-#[derive(Debug, Deref, Event, PartialEq, Eq, Clone, Hash)]
-pub struct KeyEvent(pub event::KeyEvent);
+/// A message that is sent whenever a key event is read from crossterm.
+#[derive(Message, Deref, Clone, Copy, PartialEq, Eq, Hash, Debug)]
+pub struct KeyMessage(pub event::KeyEvent);
 
-/// An event that is sent whenever a mouse event is read from crossterm.
-#[derive(Debug, Clone, Copy, Event, PartialEq, Eq, Deref)]
-pub struct MouseEvent(pub event::MouseEvent);
+/// A message that is sent whenever a mouse event is read from crossterm.
+#[derive(Message, Deref, Clone, Copy, PartialEq, Eq, Hash, Debug)]
+pub struct MouseMessage(pub event::MouseEvent);
 
-/// An event that is sent when the terminal gains or loses focus.
-#[derive(Debug, Clone, Copy, Event, PartialEq, Eq)]
-pub enum FocusEvent {
+/// A message that is sent when the terminal gains or loses focus.
+#[derive(Message, Clone, Copy, PartialEq, Eq, Hash, Debug)]
+pub enum FocusMessage {
     Gained,
     Lost,
 }
 
 /// An event that is sent when the terminal is resized.
-#[derive(Debug, Clone, Copy, Event, PartialEq, Eq, Deref)]
-pub struct ResizeEvent(pub Size);
+#[derive(Message, Deref, Clone, Copy, PartialEq, Eq, Hash, Debug)]
+pub struct ResizeMessage(pub Size);
 
 /// An event that is sent when text is pasted into the terminal.
-#[derive(Debug, Clone, Event, PartialEq, Eq, Deref)]
-pub struct PasteEvent(pub String);
+#[derive(Message, Deref, Clone, PartialEq, Eq, Hash, Debug)]
+pub struct PasteMessage(pub String);
 
-/// System that reads events from crossterm and sends them to the `KeyEvent` event.
-///
-/// This system reads events from crossterm and sends them to the `KeyEvent` event. It also sends
-/// an `AppExit` event when `Ctrl+C` is pressed.
+/// System that reads events from crossterm and forwards them as Bevy messages.
 pub fn crossterm_event_system(
-    mut events: EventWriter<CrosstermEvent>,
-    mut keys: EventWriter<KeyEvent>,
-    mut mouse: EventWriter<MouseEvent>,
-    mut focus: EventWriter<FocusEvent>,
-    mut paste: EventWriter<PasteEvent>,
-    mut resize: EventWriter<ResizeEvent>,
+    mut messages: MessageWriter<CrosstermMessage>,
+    mut keys: MessageWriter<KeyMessage>,
+    mut mouse: MessageWriter<MouseMessage>,
+    mut focus: MessageWriter<FocusMessage>,
+    mut paste: MessageWriter<PasteMessage>,
+    mut resize: MessageWriter<ResizeMessage>,
 ) -> Result {
     while event::poll(Duration::ZERO)? {
         let event = event::read()?;
         match event {
             Key(event) => {
-                keys.write(KeyEvent(event));
+                keys.write(KeyMessage(event));
             }
             event::Event::FocusLost => {
-                focus.write(FocusEvent::Lost);
+                focus.write(FocusMessage::Lost);
             }
             event::Event::FocusGained => {
-                focus.write(FocusEvent::Gained);
+                focus.write(FocusMessage::Gained);
             }
             event::Event::Mouse(event) => {
-                mouse.write(MouseEvent(event));
+                mouse.write(MouseMessage(event));
             }
             event::Event::Paste(ref s) => {
-                paste.write(PasteEvent(s.clone()));
+                paste.write(PasteMessage(s.clone()));
             }
             event::Event::Resize(columns, rows) => {
-                resize.write(ResizeEvent(Size::new(columns, rows)));
+                resize.write(ResizeMessage(Size::new(columns, rows)));
             }
         }
-        events.write(CrosstermEvent(event));
+        messages.write(CrosstermMessage(event));
     }
     Ok(())
 }
 
+/// System that sends an `AppExit` message when `Ctrl+C` is pressed.
 fn control_c_interrupt_system(
-    mut key_events: EventReader<KeyEvent>,
-    mut exit: EventWriter<AppExit>,
+    mut key_messages: MessageReader<KeyMessage>,
+    mut exit: MessageWriter<AppExit>,
 ) {
-    for event in key_events.read() {
-        if event.kind == KeyEventKind::Press
-            && event.modifiers == KeyModifiers::CONTROL
-            && event.code == KeyCode::Char('c')
+    for message in key_messages.read() {
+        if message.kind == KeyEventKind::Press
+            && message.modifiers == KeyModifiers::CONTROL
+            && message.code == KeyCode::Char('c')
         {
             exit.write_default();
         }

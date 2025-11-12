@@ -2,7 +2,7 @@ use bevy::{
     app::{AppExit, ScheduleRunnerPlugin},
     prelude::*,
 };
-use bevy_ratatui::{RatatuiContext, RatatuiPlugins, event::KeyEvent, event::MouseEvent};
+use bevy_ratatui::{RatatuiContext, RatatuiPlugins, event::KeyMessage, event::MouseMessage};
 use rand::prelude::*;
 use ratatui::crossterm::event::MouseEventKind;
 
@@ -21,10 +21,13 @@ fn main() {
         .run();
 }
 
-fn keyboard_input_system(mut events: EventReader<KeyEvent>, mut exit: EventWriter<AppExit>) {
+fn keyboard_input_system(
+    mut key_messages: MessageReader<KeyMessage>,
+    mut exit: MessageWriter<AppExit>,
+) {
     use ratatui::crossterm::event::KeyCode;
-    for event in events.read() {
-        match event.code {
+    for message in key_messages.read() {
+        match message.code {
             KeyCode::Char('q') | KeyCode::Esc => {
                 exit.write_default();
             }
@@ -121,14 +124,14 @@ fn draw_balls(mut context: ResMut<RatatuiContext>, query: Query<(&Ball, &Positio
 }
 
 fn mouse_input_system(
-    mut events: EventReader<MouseEvent>,
+    mut messages: MessageReader<MouseMessage>,
     mut commands: Commands,
     context: Res<RatatuiContext>,
 ) {
-    for event in events.read() {
+    for message in messages.read() {
         let ratatui::crossterm::event::MouseEvent {
             kind, column, row, ..
-        } = event.0;
+        } = message.0;
         let size = context.size().unwrap(); // TODO: handle error properly
         let column = column as f32 / size.width as f32;
         let row = row as f32 / size.height as f32;

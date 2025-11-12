@@ -17,7 +17,7 @@ use bevy::{app::AppExit, diagnostic::FrameCount, prelude::*};
 #[cfg(not(feature = "windowed"))]
 use bevy::{app::ScheduleRunnerPlugin, state::app::StatesPlugin};
 #[cfg(not(feature = "windowed"))]
-use bevy_ratatui::event::KeyEvent;
+use bevy_ratatui::event::KeyMessage;
 use bevy_ratatui::{RatatuiContext, RatatuiPlugins};
 #[cfg(not(feature = "windowed"))]
 use ratatui::crossterm::event::KeyEventKind;
@@ -55,7 +55,7 @@ fn main() {
     app.init_resource::<BackgroundColor>()
         .init_resource::<Counter>()
         .init_state::<AppState>()
-        .add_event::<CounterEvent>()
+        .add_message::<CounterMessage>()
         .add_systems(
             Update,
             (ui_system, update_counter_system, background_color_system),
@@ -86,17 +86,17 @@ fn ui_system(
 
 #[cfg(not(feature = "windowed"))]
 fn keyboard_input_system(
-    mut events: EventReader<KeyEvent>,
-    mut app_exit: EventWriter<AppExit>,
-    mut counter_events: EventWriter<CounterEvent>,
+    mut key_messages: MessageReader<KeyMessage>,
+    mut app_exit: MessageWriter<AppExit>,
+    mut counter_messages: MessageWriter<CounterMessage>,
 ) {
     use ratatui::crossterm::event::KeyCode;
-    for event in events.read() {
-        if let KeyEventKind::Release = event.kind {
+    for message in key_messages.read() {
+        if let KeyEventKind::Release = message.kind {
             continue;
         }
 
-        match event.code {
+        match message.code {
             KeyCode::Char('q') | KeyCode::Esc => {
                 app_exit.write_default();
             }
@@ -104,10 +104,10 @@ fn keyboard_input_system(
                 panic!("Panic!");
             }
             KeyCode::Left => {
-                counter_events.write(CounterEvent::Decrement);
+                counter_messages.write(CounterMessage::Decrement);
             }
             KeyCode::Right => {
-                counter_events.write(CounterEvent::Increment);
+                counter_messages.write(CounterMessage::Increment);
             }
             _ => {}
         }
@@ -117,8 +117,8 @@ fn keyboard_input_system(
 #[cfg(feature = "windowed")]
 fn keyboard_input_system_windowed(
     keys: Res<ButtonInput<KeyCode>>,
-    mut app_exit: EventWriter<AppExit>,
-    mut counter_events: EventWriter<CounterEvent>,
+    mut app_exit: MessageWriter<AppExit>,
+    mut counter_messages: MessageWriter<CounterMessage>,
 ) {
     if keys.just_pressed(KeyCode::KeyQ) {
         app_exit.write_default();
@@ -127,10 +127,10 @@ fn keyboard_input_system_windowed(
         panic!("Panic!");
     }
     if keys.pressed(KeyCode::ArrowLeft) {
-        counter_events.write(CounterEvent::Decrement);
+        counter_messages.write(CounterMessage::Decrement);
     }
     if keys.pressed(KeyCode::ArrowRight) {
-        counter_events.write(CounterEvent::Increment);
+        counter_messages.write(CounterMessage::Increment);
     }
 }
 
@@ -147,21 +147,21 @@ impl Counter {
     }
 }
 
-#[derive(Debug, Clone, Copy, Event, PartialEq, Eq)]
-enum CounterEvent {
+#[derive(Message, Clone, Copy, PartialEq, Eq, Debug)]
+enum CounterMessage {
     Increment,
     Decrement,
 }
 
 fn update_counter_system(
     mut counter: ResMut<Counter>,
-    mut events: EventReader<CounterEvent>,
+    mut counter_messages: MessageReader<CounterMessage>,
     mut app_state: ResMut<NextState<AppState>>,
 ) {
-    for event in events.read() {
-        match event {
-            CounterEvent::Increment => counter.increment(),
-            CounterEvent::Decrement => counter.decrement(),
+    for message in counter_messages.read() {
+        match message {
+            CounterMessage::Increment => counter.increment(),
+            CounterMessage::Decrement => counter.decrement(),
         }
         // demonstrates changing something in the app state based on the counter value
         if counter.0 < 0 {

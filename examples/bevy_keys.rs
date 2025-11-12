@@ -7,7 +7,7 @@ use bevy::{
 };
 use bevy_ratatui::{RatatuiContext, RatatuiPlugins};
 use bevy_ratatui::{
-    event::KeyEvent,
+    event::KeyMessage,
     kitty::KittyEnabled,
     translation::{Capability, Detected, Emulate, EmulationPolicy, ReleaseKey},
 };
@@ -36,7 +36,7 @@ fn main() {
 }
 
 #[derive(Resource, Deref, DerefMut)]
-struct LastKeypress(pub KeyEvent);
+struct LastKeypress(pub KeyMessage);
 
 #[derive(Resource, Deref, DerefMut)]
 struct LastBevyKeypress(pub KeyboardInput);
@@ -124,7 +124,7 @@ fn draw_scene_system(
 
 fn hotkeys(
     input: Res<ButtonInput<KeyCode>>,
-    mut exit: EventWriter<AppExit>,
+    mut exit: MessageWriter<AppExit>,
     mut release_key: ResMut<ReleaseKey>,
     mut policy: ResMut<EmulationPolicy>,
 ) {
@@ -146,15 +146,15 @@ fn hotkeys(
     }
 }
 
-fn keyboard_input_system(mut events: EventReader<KeyEvent>, mut commands: Commands) {
-    for event in events.read() {
-        commands.insert_resource(LastKeypress(event.clone()));
+fn keyboard_input_system(mut messages: MessageReader<KeyMessage>, mut commands: Commands) {
+    for message in messages.read() {
+        commands.insert_resource(LastKeypress(message.clone()));
     }
 }
 
-fn bevy_keyboard_input_system(mut events: EventReader<KeyboardInput>, mut commands: Commands) {
-    for event in events.read() {
-        commands.insert_resource(LastBevyKeypress(event.clone()));
+fn bevy_keyboard_input_system(mut messages: MessageReader<KeyboardInput>, mut commands: Commands) {
+    for message in messages.read() {
+        commands.insert_resource(LastBevyKeypress(message.clone()));
     }
 }
 

@@ -40,23 +40,23 @@ fn draw_system(mut context: ResMut<RatatuiContext>) -> Result {
 }
 ```
 
-To read user input, you can listen for the crossterm input events forwarded by
+To read user input, you can listen for the crossterm input messages forwarded by
 this crate:
 ```rust
 use bevy::app::AppExit;
-use bevy_ratatui::event::KeyEvent;
+use bevy_ratatui::event::KeyMessage;
 use crossterm::event::KeyCode;
 
-fn input_system(mut events: EventReader<KeyEvent>, mut exit: EventWriter<AppExit>) {
-    for event in events.read() {
-        if let KeyCode::Char('q') = event.code {
+fn input_system(mut messages: MessageReader<KeyMessage>, mut exit: MessageWriter<AppExit>) {
+    for message in messages.read() {
+        if let KeyCode::Char('q') = message.code {
             exit.send_default();
         }
     }
 }
 ```
 ...or use the `enable_input_forwarding` option in `RatatuiPlugins` which will
-map crossterm input events to normal bevy input events.
+map crossterm input events to normal bevy input messages.
 
 ## demo
 
