@@ -1,5 +1,5 @@
 use bevy::{app::AppExit, prelude::*};
-use bevy_ratatui::event::KeyEvent;
+use bevy_ratatui::event::KeyMessage;
 use bevy_ratatui::{RatatuiContext, RatatuiPlugins};
 use ratatui::crossterm::event::KeyCode;
 use ratatui::text::Text;
@@ -26,9 +26,9 @@ fn draw_system(mut context: ResMut<RatatuiContext>) -> Result {
     Ok(())
 }
 
-fn input_system(mut events: EventReader<KeyEvent>, mut exit: EventWriter<AppExit>) {
-    for event in events.read() {
-        if let KeyCode::Char('q') = event.code {
+fn input_system(mut messages: MessageReader<KeyMessage>, mut exit: MessageWriter<AppExit>) {
+    for message in messages.read() {
+        if let KeyCode::Char('q') = message.code {
             exit.write_default();
         }
     }
