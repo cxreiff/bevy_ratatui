@@ -12,10 +12,12 @@ use ratatui::backend::CrosstermBackend;
 
 use crate::{RatatuiPlugins, context::TerminalContext};
 
-use super::{
-    cleanup::CleanupPlugin, error::ErrorPlugin, event::EventPlugin, kitty::KittyPlugin,
-    mouse::MousePlugin, translation::TranslationPlugin,
-};
+use super::{cleanup::CleanupPlugin, error::ErrorPlugin, event::EventPlugin, kitty::KittyPlugin};
+
+#[cfg(feature = "mouse")]
+use super::mouse::MousePlugin;
+#[cfg(feature = "keyboard")]
+use super::translation::TranslationPlugin;
 
 /// Ratatui context that will draw to the terminal buffer using crossterm.
 #[derive(Deref, DerefMut, Debug)]
@@ -48,16 +50,24 @@ impl TerminalContext<CrosstermBackend<Stdout>> for CrosstermContext {
             .add(CleanupPlugin)
             .add(ErrorPlugin)
             .add(EventPlugin::default())
-            .add(KittyPlugin)
-            .add(MousePlugin)
-            .add(TranslationPlugin);
+            .add(KittyPlugin);
 
+        #[cfg(feature = "mouse")]
+        let builder = builder.add(MousePlugin);
+        #[cfg(feature = "keyboard")]
+        let builder = builder.add(TranslationPlugin);
+
+        let mut builder = builder;
         if !group.enable_kitty_protocol {
             builder = builder.disable::<KittyPlugin>();
         }
+
+        #[cfg(feature = "mouse")]
         if !group.enable_mouse_capture {
             builder = builder.disable::<MousePlugin>();
         }
+
+        #[cfg(feature = "keyboard")]
         if !group.enable_input_forwarding {
             builder = builder.disable::<TranslationPlugin>();
         }
