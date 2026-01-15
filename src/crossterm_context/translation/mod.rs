@@ -103,5 +103,6 @@
 //! your terminal. [See
 //! here](https://sw.kovidgoyal.net/kitty/keyboard-protocol/) for a list of
 //! terminals implementing this protocol.
+
 mod keyboard_translation;
 pub use keyboard_translation::*;

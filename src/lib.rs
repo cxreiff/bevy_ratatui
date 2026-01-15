@@ -102,13 +102,14 @@ pub mod kitty {
     pub use super::crossterm_context::kitty::{KittyEnabled, KittyPlugin};
 }
 
-#[cfg(feature = "crossterm")]
+#[cfg(all(feature = "crossterm", feature = "mouse"))]
 pub mod mouse {
     pub use super::crossterm_context::mouse::{MouseEnabled, MousePlugin};
 }
 
 #[cfg(feature = "crossterm")]
 pub mod translation {
+    #[cfg(feature = "keyboard")]
     pub use super::crossterm_context::translation::*;
 }
 
