@@ -28,6 +28,7 @@ use ratatui::{
     text::Line,
     widgets::WidgetRef,
 };
+use ratatui::widgets::{FrameExt, Widget};
 
 fn main() {
     let mut app = App::new();
@@ -75,10 +76,10 @@ fn ui_system(
     context.draw(|frame| {
         let area = frame.area();
         let frame_count = Line::from(format!("Frame Count: {}", frame_count.0)).right_aligned();
-        frame.render_widget(bg_color.as_ref(), area);
+        frame.render_widget_ref(bg_color.as_ref(), area);
         frame.render_widget(frame_count, area);
-        frame.render_widget(counter.as_ref(), area);
-        frame.render_widget(app_state.get(), area)
+        frame.render_widget_ref(counter.as_ref(), area);
+        frame.render_widget_ref(app_state.get(), area)
     })?;
 
     Ok(())
@@ -172,10 +173,10 @@ fn update_counter_system(
     }
 }
 
-impl WidgetRef for Counter {
+impl WidgetRef for &Counter {
     fn render_ref(&self, area: Rect, buf: &mut Buffer) {
         let counter = format!("Counter: {}", self.0);
-        Line::from(counter).render_ref(area, buf);
+        Line::from(counter).render(area, buf);
     }
 }
 
@@ -186,13 +187,13 @@ enum AppState {
     Positive,
 }
 
-impl WidgetRef for AppState {
+impl WidgetRef for &AppState {
     fn render_ref(&self, area: Rect, buf: &mut Buffer) {
         let state = match self {
             AppState::Negative => "Negative",
             AppState::Positive => "Positive",
         };
-        Line::from(state).centered().render_ref(area, buf);
+        Line::from(state).centered().render(area, buf);
     }
 }
 
@@ -219,7 +220,7 @@ impl Default for BackgroundColor {
     }
 }
 
-impl WidgetRef for BackgroundColor {
+impl WidgetRef for &BackgroundColor {
     fn render_ref(&self, area: Rect, buf: &mut Buffer) {
         buf.set_style(area, Style::new().bg(self.0));
     }

@@ -7,8 +7,6 @@ use bevy::{
     prelude::*,
 };
 use ratatui::crossterm::event::KeyModifiers;
-use smol_str::SmolStr;
-
 use crate::crossterm_context::event::{InputSet, KeyMessage};
 
 pub struct TranslationPlugin;
@@ -967,9 +965,9 @@ fn crossterm_modifier_to_bevy_key(
     result
 }
 
-fn logical_key_to_text(logical_key: &bevy::input::keyboard::Key) -> Option<SmolStr> {
+fn logical_key_to_text(logical_key: &bevy::input::keyboard::Key) -> Option<String> {
     if let bevy::input::keyboard::Key::Character(character) = logical_key {
-        Some(SmolStr::new(character.clone()))
+        Some(String::from(character.clone()))
     } else {
         None
     }
