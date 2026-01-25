@@ -647,6 +647,11 @@ fn to_bevy_keycode(
                 mods |= m::SHIFT;
                 Some(b::Slash)
             }
+            '`' => Some(b::Backquote),
+            '~' => {
+                mods |= m::SHIFT;
+                Some(b::Backquote)
+            }
             ' ' => Some(b::Space),
             '1' => Some(b::Digit1),
             '2' => Some(b::Digit2),
