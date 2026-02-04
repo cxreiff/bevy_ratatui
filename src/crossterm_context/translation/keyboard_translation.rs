@@ -2,12 +2,12 @@
 
 use std::{collections::HashSet, hash::Hash, time::Duration};
 
+use crate::crossterm_context::event::{InputSet, KeyMessage};
 use bevy::{
     input::{ButtonState, keyboard::KeyboardInput},
     prelude::*,
 };
 use ratatui::crossterm::event::KeyModifiers;
-use crate::crossterm_context::event::{InputSet, KeyMessage};
 
 pub struct TranslationPlugin;
 

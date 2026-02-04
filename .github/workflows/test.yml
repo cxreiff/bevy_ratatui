@@ -6,8 +6,69 @@ on:
       - main
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
-  tests:
-    uses: cxreiff/github_workflows/.github/workflows/rust_tests.yml@main
-    with:
-      linux_dependencies: "libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev"
+  required:
+    runs-on: ubuntu-latest
+    name: ubuntu - ${{ matrix.toolchain }}
+    strategy:
+      matrix:
+        toolchain: [stable, beta]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: clear disk space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tools-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          swap-storage: true
+          docker-images: true
+
+      - name: linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
+
+      - name: install rust ${{ matrix.toolchain }}
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.toolchain }}
+
+      - name: cargo generate-lockfile
+        run: cargo generate-lockfile
+
+      - name: cargo test --locked
+        run: cargo test --locked --all-features --all-targets
+
+      - name: cargo test --doc
+        run: cargo test --locked --all-features --doc
+
+  os-check:
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }} - stable
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest]
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: install rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: cargo generate-lockfile
+        run: cargo generate-lockfile
+
+      - name: cargo test
+        run: cargo test --locked --all-features --all-targets
+
+      - name: cache cargo dependencies
+        uses: Swatinem/rust-cache@v2

@@ -53,7 +53,7 @@
 //!
 //! [Bevy]: https://bevyengine.org
 //! [Ratatui]: https://ratatui.rs
-//! [examples]: https://github.com/cxreiff/bevy_ratatui/tree/main/examples
+//! [examples]: https://github.com/ratatui/bevy_ratatui/tree/main/examples
 
 mod context_trait;
 #[cfg(feature = "crossterm")]

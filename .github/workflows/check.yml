@@ -6,11 +6,67 @@ on:
       - main
   pull_request:
 
+env:
+  CARGO_TERM_COLOR: always
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
-  checks:
-    uses: cxreiff/github_workflows/.github/workflows/rust_checks.yml@main
+  fmt:
+    name: fmt
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: install rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+      - name: cargo fmt
+        run: cargo fmt -- --check
+      - name: cache cargo dependencies
+        uses: Swatinem/rust-cache@v2
+
+  clippy:
+    name: clippy - ${{ matrix.toolchain }}
+    runs-on: ubuntu-latest
     permissions:
       checks: write
-    with:
-      linux_dependencies: "libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev"
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain: [stable, beta]
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
+      - name: install rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - name: clippy
+        uses: clechasseur/rs-clippy-check@v3
+      - name: cache cargo dependencies
+        uses: Swatinem/rust-cache@v2
 
+  doc:
+    name: doc
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
+      - name: install rust nightly
+        uses: dtolnay/rust-toolchain@nightly
+      - name: cargo doc
+        run: cargo doc --no-deps --all-features
+        env:
+          RUSTDOCFLAGS: --cfg docsrs

@@ -21,6 +21,7 @@ use bevy_ratatui::event::KeyMessage;
 use bevy_ratatui::{RatatuiContext, RatatuiPlugins};
 #[cfg(not(feature = "windowed"))]
 use ratatui::crossterm::event::KeyEventKind;
+use ratatui::widgets::{FrameExt, Widget};
 use ratatui::{
     buffer::Buffer,
     layout::Rect,
@@ -28,7 +29,6 @@ use ratatui::{
     text::Line,
     widgets::WidgetRef,
 };
-use ratatui::widgets::{FrameExt, Widget};
 
 fn main() {
     let mut app = App::new();

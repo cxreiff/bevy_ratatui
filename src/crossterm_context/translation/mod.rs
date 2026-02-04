@@ -26,7 +26,7 @@
 //!
 //! # Example
 //!
-//! [bevy_keys](https://github.com/cxreiff/bevy_ratatui/tree/main/examples/bevy_keys.rs)
+//! [bevy_keys](https://github.com/ratatui/bevy_ratatui/tree/main/examples/bevy_keys.rs)
 //! shows what keys crossterm has received and what bevy keys are emitted. In
 //! addition it will show what capabilities have been detected and what
 //! emulation is being used.
