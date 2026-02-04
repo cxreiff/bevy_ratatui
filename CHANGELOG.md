@@ -4,38 +4,38 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
-## [0.11.0](https://github.com/cxreiff/bevy_ratatui/compare/v0.10.0...v0.11.0) - 2025-11-12
+## [0.11.0](https://github.com/ratatui/bevy_ratatui/compare/v0.10.0...v0.11.0) - 2025-11-12
 
 ### Other
 
 - migration to bevy 0.18
 
-## [0.10.0](https://github.com/cxreiff/bevy_ratatui/compare/v0.9.3...v0.10.0) - 2025-11-12
+## [0.10.0](https://github.com/ratatui/bevy_ratatui/compare/v0.9.3...v0.10.0) - 2025-11-12
 
 ### Other
 
 - migration to bevy 0.17
 
-## [0.9.3](https://github.com/cxreiff/bevy_ratatui/compare/v0.9.2...v0.9.3) - 2025-10-06
+## [0.9.3](https://github.com/ratatui/bevy_ratatui/compare/v0.9.2...v0.9.3) - 2025-10-06
 
 ### Other
 
-- Bump tracing-subscriber from 0.3.19 to 0.3.20 ([#66](https://github.com/cxreiff/bevy_ratatui/pull/66))
-- bump soft_ratatui ([#68](https://github.com/cxreiff/bevy_ratatui/pull/68))
+- Bump tracing-subscriber from 0.3.19 to 0.3.20 ([#66](https://github.com/ratatui/bevy_ratatui/pull/66))
+- bump soft_ratatui ([#68](https://github.com/ratatui/bevy_ratatui/pull/68))
 
-## [0.9.2](https://github.com/cxreiff/bevy_ratatui/compare/v0.9.1...v0.9.2) - 2025-05-27
+## [0.9.2](https://github.com/ratatui/bevy_ratatui/compare/v0.9.1...v0.9.2) - 2025-05-27
 
 ### Other
 
 - remove direct dependency on crossterm
 
-## [0.9.1](https://github.com/cxreiff/bevy_ratatui/compare/v0.9.0...v0.9.1) - 2025-05-26
+## [0.9.1](https://github.com/ratatui/bevy_ratatui/compare/v0.9.0...v0.9.1) - 2025-05-26
 
 ### Other
 
 - new feature for toggling crossterm context
 
-## [0.9.0](https://github.com/cxreiff/bevy_ratatui/compare/v0.8.3...v0.9.0) - 2025-05-13
+## [0.9.0](https://github.com/ratatui/bevy_ratatui/compare/v0.8.3...v0.9.0) - 2025-05-13
 
 ### Fixed
 
@@ -55,25 +55,25 @@ All notable changes to this project will be documented in this file.
 
 - removed some cfg feature gates
 
-## [0.8.3](https://github.com/cxreiff/bevy_ratatui/compare/v0.8.2...v0.8.3) - 2025-04-27
+## [0.8.3](https://github.com/ratatui/bevy_ratatui/compare/v0.8.2...v0.8.3) - 2025-04-27
 
 ### Other
 
 - make control_c_interrupt public
 
-## [0.8.2](https://github.com/cxreiff/bevy_ratatui/compare/v0.8.1...v0.8.2) - 2025-04-27
+## [0.8.2](https://github.com/ratatui/bevy_ratatui/compare/v0.8.1...v0.8.2) - 2025-04-27
 
 ### Other
 
 - actually remove ctrl-c behavior from passthrough
 
-## [0.8.1](https://github.com/cxreiff/bevy_ratatui/compare/v0.8.0...v0.8.1) - 2025-04-27
+## [0.8.1](https://github.com/ratatui/bevy_ratatui/compare/v0.8.0...v0.8.1) - 2025-04-27
 
 ### Fixed
 
 - fixed issue when bevy/bevy_winit feature enabled
 
-## [0.8.0](https://github.com/cxreiff/bevy_ratatui/compare/v0.7.1...v0.8.0) - 2025-04-26
+## [0.8.0](https://github.com/ratatui/bevy_ratatui/compare/v0.7.1...v0.8.0) - 2025-04-26
 
 ### Added
 
@@ -86,56 +86,56 @@ All notable changes to this project will be documented in this file.
 - cargo fix --edition
 - migration to bevy 0.16
 
-## [0.7.1](https://github.com/cxreiff/bevy_ratatui/compare/v0.7.0...v0.7.1) - 2025-03-21
+## [0.7.1](https://github.com/ratatui/bevy_ratatui/compare/v0.7.0...v0.7.1) - 2025-03-21
 
 ### Other
 
 - cleaned up README, examples
-- transer ownership to cxreiff ([#39](https://github.com/cxreiff/bevy_ratatui/pull/39))
-- Bump the cargo-dependencies group across 1 directory with 4 updates ([#34](https://github.com/cxreiff/bevy_ratatui/pull/34))
+- transer ownership to cxreiff ([#39](https://github.com/ratatui/bevy_ratatui/pull/39))
+- Bump the cargo-dependencies group across 1 directory with 4 updates ([#34](https://github.com/ratatui/bevy_ratatui/pull/34))
 
-## [0.6.4](https://github.com/joshka/bevy_ratatui/compare/v0.6.3...v0.6.4) - 2024-10-22
-
-### Other
-
-- Bump the cargo-dependencies group across 1 directory with 3 updates ([#24](https://github.com/joshka/bevy_ratatui/pull/24))
-
-## [0.6.3](https://github.com/joshka/bevy_ratatui/compare/v0.6.2...v0.6.3) - 2024-08-27
+## [0.6.4](https://github.com/ratatui/bevy_ratatui/compare/v0.6.3...v0.6.4) - 2024-10-22
 
 ### Other
-- Bump ratatui from 0.28.0 to 0.28.1 in the cargo-dependencies group ([#21](https://github.com/joshka/bevy_ratatui/pull/21))
 
-## [0.6.2](https://github.com/joshka/bevy_ratatui/compare/v0.6.1...v0.6.2) - 2024-08-13
+- Bump the cargo-dependencies group across 1 directory with 3 updates ([#24](https://github.com/ratatui/bevy_ratatui/pull/24))
+
+## [0.6.3](https://github.com/ratatui/bevy_ratatui/compare/v0.6.2...v0.6.3) - 2024-08-27
 
 ### Other
-- Bump ratatui from 0.27.0 to 0.28.0 in the cargo-dependencies group ([#20](https://github.com/joshka/bevy_ratatui/pull/20))
-- Bump the cargo-dependencies group with 2 updates ([#18](https://github.com/joshka/bevy_ratatui/pull/18))
+- Bump ratatui from 0.28.0 to 0.28.1 in the cargo-dependencies group ([#21](https://github.com/ratatui/bevy_ratatui/pull/21))
 
-## [0.6.1](https://github.com/joshka/bevy_ratatui/compare/v0.6.0...v0.6.1) - 2024-07-23
+## [0.6.2](https://github.com/ratatui/bevy_ratatui/compare/v0.6.1...v0.6.2) - 2024-08-13
+
+### Other
+- Bump ratatui from 0.27.0 to 0.28.0 in the cargo-dependencies group ([#20](https://github.com/ratatui/bevy_ratatui/pull/20))
+- Bump the cargo-dependencies group with 2 updates ([#18](https://github.com/ratatui/bevy_ratatui/pull/18))
+
+## [0.6.1](https://github.com/ratatui/bevy_ratatui/compare/v0.6.0...v0.6.1) - 2024-07-23
 
 ### Added
-- Emit bevy_input keyboard events ([#13](https://github.com/joshka/bevy_ratatui/pull/13))
+- Emit bevy_input keyboard events ([#13](https://github.com/ratatui/bevy_ratatui/pull/13))
 
 ### Other
-- Removed dynamic_linking feature ([#17](https://github.com/joshka/bevy_ratatui/pull/17))
+- Removed dynamic_linking feature ([#17](https://github.com/ratatui/bevy_ratatui/pull/17))
 - Pass crossterm key event to bevy key handling.
 
-## [0.5.3](https://github.com/joshka/bevy_ratatui/compare/v0.5.2...v0.5.3) - 2024-07-05
+## [0.5.3](https://github.com/ratatui/bevy_ratatui/compare/v0.5.2...v0.5.3) - 2024-07-05
 
 ### Other
-- Migrate to Bevy 0.14 ([#10](https://github.com/joshka/bevy_ratatui/pull/10))
+- Migrate to Bevy 0.14 ([#10](https://github.com/ratatui/bevy_ratatui/pull/10))
 
-## [0.5.2](https://github.com/joshka/bevy_ratatui/compare/v0.5.1...v0.5.2) - 2024-06-25
-
-### Other
-- Bump ratatui from 0.26.3 to 0.27.0 in the cargo-dependencies group ([#8](https://github.com/joshka/bevy_ratatui/pull/8))
-
-## [0.5.1](https://github.com/joshka/bevy_ratatui/compare/v0.5.0...v0.5.1) - 2024-06-07
+## [0.5.2](https://github.com/ratatui/bevy_ratatui/compare/v0.5.1...v0.5.2) - 2024-06-25
 
 ### Other
-- Ensure kitty setup runs after terminal setup ([#6](https://github.com/joshka/bevy_ratatui/pull/6))
+- Bump ratatui from 0.26.3 to 0.27.0 in the cargo-dependencies group ([#8](https://github.com/ratatui/bevy_ratatui/pull/8))
 
-## [0.5.0](https://github.com/joshka/bevy_ratatui/compare/v0.4.0...v0.5.0) - 2024-06-05
+## [0.5.1](https://github.com/ratatui/bevy_ratatui/compare/v0.5.0...v0.5.1) - 2024-06-07
+
+### Other
+- Ensure kitty setup runs after terminal setup ([#6](https://github.com/ratatui/bevy_ratatui/pull/6))
+
+## [0.5.0](https://github.com/ratatui/bevy_ratatui/compare/v0.4.0...v0.5.0) - 2024-06-05
 
 ### Added
 - Add rest of crossterm events.
@@ -143,14 +143,14 @@ All notable changes to this project will be documented in this file.
 ### Other
 - Move mouse to separate plugin.
 - Make kitty protocol configurable.
-- Added kitty protocol support. ([#5](https://github.com/joshka/bevy_ratatui/pull/5))
+- Added kitty protocol support. ([#5](https://github.com/ratatui/bevy_ratatui/pull/5))
 - Add mouse event example.
 - Add more docs.
 
-## [0.4.0](https://github.com/joshka/bevy_ratatui/compare/v0.3.0...v0.4.0) - 2024-06-01
+## [0.4.0](https://github.com/ratatui/bevy_ratatui/compare/v0.3.0...v0.4.0) - 2024-06-01
 
 ### Other
-- Add docs and hello world example ([#2](https://github.com/joshka/bevy_ratatui/pull/2))
+- Add docs and hello world example ([#2](https://github.com/ratatui/bevy_ratatui/pull/2))
 
 - [3e7b6818](https://github.com/joshka/ratatui_bevy/commit/3e7b68186b896b8ddf5ab1a533e511ef8010a791): Initial implementation
 - [f224c58a](https://github.com/joshka/ratatui_bevy/commit/f224c58a6d90807c51153a86ed03e60919d68f8f): Rearrange to modules
